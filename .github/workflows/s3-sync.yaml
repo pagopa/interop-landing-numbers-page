@@ -37,3 +37,24 @@ jobs:
       - name: Sync files to S3
         run: |
           aws s3 sync src/assets/ s3://${{ vars.S3_BUCKET_NAME }}/assets/ --delete
+
+  invalidate-cache:
+    needs: [ s3-sync ]
+      runs-on: ubuntu-latest
+      environment: ${{ startsWith(github.ref, 'refs/tags/') && 'prod' || github.ref_name == 'develop' && 'dev' }}
+      steps:
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.IAM_ROLE_ARN }}
+          role-session-name: interop-landing-numbers-page-invalidate-cloudfront-distribution-cache-${{ github.run_number }}
+
+      - name: Invalidate CloudFront Cache
+        run: |
+          set -euo pipefail
+
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "${{ vars.CLOUDFRONT_INVALIDATION_PATHS }}"  #space separated
