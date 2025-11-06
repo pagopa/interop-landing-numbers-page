@@ -49,7 +49,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ secrets.IAM_ROLE_ARN }}
-          role-session-name: interop-landing-numbers-page-invalidate-cloudfront-distribution-cache-${{ github.run_number }}
+          role-session-name: interop-landing-numbers-page-invalidate-cache
 
       - name: Invalidate CloudFront Cache
         run: |
