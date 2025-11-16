@@ -1,0 +1,40 @@
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@3.1.1
+jobs:
+  build_project:
+    working_directory: ~/out
+    docker:
+      - image: cimg/node:18.3.0@sha256:5c35655f5e5cdceaa37bfcee1b6f34c83b2129ae5983892fb921238ec1409557
+    steps:
+      - checkout
+      - run:
+          name: Check node version
+          command: node --version
+      - run:
+          name: Install Dependencies
+          command: yarn install
+      - run:
+          name: Build and export Next app
+          command: yarn export
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  deploy_project:
+    executor: aws-cli/default
+    steps:
+      - attach_workspace:
+          at: .
+      - aws-cli/setup:
+          profile-name: default
+      - run:
+          name: Upload files to S3
+          command: aws s3 sync ./out/ s3://interop-showcase-test-public --delete
+workflows: # Define a Workflow running the build job, then the deploy job
+  build_and_deploy:
+    jobs:
+      - build_project
+      - deploy_project:
+          requires:
+            - build_project

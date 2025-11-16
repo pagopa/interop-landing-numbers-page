@@ -1,0 +1,20 @@
+diff --git a/node_modules/@pagopa/mui-italia/dist/theme/theme.js b/node_modules/@pagopa/mui-italia/dist/theme/theme.js
+index 880b71e..c211e9a 100644
+--- a/node_modules/@pagopa/mui-italia/dist/theme/theme.js
++++ b/node_modules/@pagopa/mui-italia/dist/theme/theme.js
+@@ -5,14 +5,7 @@ const styles_1 = require("@mui/material/styles");
+ const colors_1 = require("@mui/material/colors");
+ /* Design Tokens */
+ const _tokens_1 = require("../tokens/index");
+-/* Typefaces */
+-/* -- Titilium */
+-require("@fontsource/titillium-web/300.css");
+-require("@fontsource/titillium-web/400.css");
+-require("@fontsource/titillium-web/600.css");
+-require("@fontsource/titillium-web/700.css");
+-/* -- DM Mono */
+-require("@fontsource/dm-mono/400.css");
++
+ function pxToRem(value) {
+     return `${value / 16}rem`;
+ }
